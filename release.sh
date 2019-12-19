@@ -12,20 +12,12 @@ hub --version | grep hub >/dev/null 2>&1 || { echo >&2 "Pls install Github CLI f
 hub fetch
 
 release_msg=$(git log --first-parent origin/production..origin/master --pretty=format:"% -%C(yellow)%d%Creset %C(green)% %s %Creset% %b %C(bold blue)(%cr by %an) %Creset" | perl -pe 's/Merge pull request (#\S+) from \S+/PR $1/g')
-
 # matches the branch descriptors to remove: ^- (\(origin.*?\))
 
-tmpfile=$(mktemp /tmp/turbo-release.XXXXXX)
-echo "$tmpfile"
-# exec 3<>"$tmpfile"
-# rm "$tmpfile"
+tmpfile=$(mktemp /tmp/release-script.XXXXXX)
 echo "$release_msg" >> "$tmpfile"
 
 $EDITOR "$tmpfile"
-
-# echo "this is the edited thing"
-# echo "########################"
-# cat "$tmpfile"
 
 edited_msg=$(<$tmpfile)
 
@@ -60,8 +52,6 @@ git push --set-upstream origin "$branch_name"
 
 pr_message="Production update ${suffix}
 
-${release_msg}"
+${edited_msg}"
 
 hub pull-request -m "$pr_message" -b production
-
-rm "$tmpfile"
