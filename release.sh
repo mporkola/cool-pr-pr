@@ -9,9 +9,10 @@ trap 'echo "\"${last_command}\" command failed with exit code $?."' EXIT
 
 hub --version | grep hub >/dev/null 2>&1 || { echo >&2 "Pls install Github CLI from https://hub.github.com/. Aborting."; exit 1; }
 
-hub fetch
+git fetch
+git checkout master
 
-release_msg=$(git log --first-parent origin/production..origin/master --pretty=format:"% -%C(yellow)%d%Creset %C(green)% %s %Creset% %b %C(bold blue)(%cr by %an) %Creset" | perl -pe 's/Merge pull request (#\S+) from \S+/PR $1/g')
+release_msg=$(git log --first-parent origin/production..master --pretty=format:"% -%C(yellow)%d%Creset %C(green)% %s %Creset% %b %C(bold blue)(%cr by %an) %Creset" | perl -pe 's/Merge pull request (#\S+) from \S+/PR $1/g')
 # matches the branch descriptors to remove: ^- (\(origin.*?\))
 
 tmpfile=$(mktemp /tmp/release-script.XXXXXX)
