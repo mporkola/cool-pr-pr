@@ -41,15 +41,16 @@ edited_msg=$(<$tmpfile)
 
 date=$(date '+%Y-%m-%d')
 
-branch_name_orig="production-update-$date"
-branch_name=$branch_name_orig
+suffix=$date
+branch_name="production-update-$suffix"
 remote_matches=$(git branch | grep "$branch_name" | wc -l)
 ordinal=0
 
 until [ $remote_matches -eq 0 ]
 do
   let ordinal=ordinal+1
-  branch_name="$branch_name_orig-$ordinal"
+  suffix="$date-$ordinal"
+  branch_name="production-update-$suffix"
   remote_matches=$(git branch | grep "$branch_name" | wc -l)
 done
 
@@ -57,6 +58,10 @@ git checkout -b "$branch_name"
 
 git push --set-upstream origin "$branch_name"
 
-cat "$tmpfile"
+pr_message="Production update ${suffix}
+
+${release_msg}"
+
+hub pull-request -m "$pr_message" -b production
 
 rm "$tmpfile"
