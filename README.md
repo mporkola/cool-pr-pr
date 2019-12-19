@@ -17,3 +17,11 @@ Assumptions:
  - Production lives in branch called `production`
  - You want the current local `master` to go to production
  - Prerequisites: [GitHub CLI](https://hub.github.com/)
+
+How to use:
+ - have this repo cloned somewhere (yes it's not very polished), in this example it's in `/codez/cool-pr-pr`
+ - be in your own repo
+ - make sure your local `master` is the thing you want to release
+ - run `/codez/cool-pr-pr/release.sh`
+ - edit the proposed PR description to your liking
+ - done! the link to your brand new PR PR is printed for you, have fun
